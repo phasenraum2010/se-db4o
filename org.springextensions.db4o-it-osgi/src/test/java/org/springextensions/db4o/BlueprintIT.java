@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import com.db4o.events.EventRegistry;
 import org.ops4j.pax.exam.Configuration;
+import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.testng.listener.PaxExam;
 import org.ops4j.pax.exam.util.Filter;
@@ -26,10 +27,9 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
+import java.util.Map;
+
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 /**
  * @author olli
@@ -47,26 +47,34 @@ public class BlueprintIT {
 
     @Configuration
     public Option[] configure() {
+        Map<String, String> env = System.getenv();
+        for (String envName : env.keySet()) {
+            System.out.format("%s=%s%n",
+                    envName,
+                    env.get(envName));
+        }
+        CoreOptions.cleanCaches();
         return options(
             // test
             mavenBundle("org.testng", "testng", "6.4"),
             // Spring Framework
-            mavenBundle("org.springframework", "org.springframework.beans", "3.0.0.RELEASE"),
-            mavenBundle("org.springframework", "org.springframework.core", "3.0.0.RELEASE"),
-            mavenBundle("org.springframework", "org.springframework.transaction", "3.0.0.RELEASE"),
+                wrappedBundle(mavenBundle("org.springframework", "spring-beans", "4.3.7.RELEASE")),
+                        wrappedBundle(mavenBundle("org.springframework", "spring-context", "4.3.7.RELEASE")),
+                                wrappedBundle(mavenBundle("org.springframework", "spring-tx", "4.3.7.RELEASE")),
             // db4o
             mavenBundle("com.db4o", "db4o-full-java5", "8.1.209.15862"),
             wrappedBundle(mavenBundle("org.apache.ant", "ant", "1.8.4")),
             // Spring db4o
-            // mavenBundle("org.springextensions.db4o", "org.springextensions.db4o", "1.0.0.BUILD-SNAPSHOT"),
-            bundle("file:../org.springextensions.db4o/target/org.springextensions.db4o-1.0.0.BUILD-SNAPSHOT.jar"),
+                mavenBundle("org.springextensions.db4o", "org.springextensions.db4o", "1.0.0.BUILD-SNAPSHOT"),
+            //bundle("file:../org.springextensions.db4o/target/org.springextensions.db4o-1.0.0.BUILD-SNAPSHOT.jar"),
+                //wrappedBundle(bundle("file:../org.springextensions.db4o/target/org.springextensions.db4o-1.0.0.BUILD-SNAPSHOT-tests.jar")),
             // Aries Blueprint
-            mavenBundle("org.apache.aries.blueprint", "org.apache.aries.blueprint", "1.0.0"),
-            mavenBundle("org.apache.aries.proxy", "org.apache.aries.proxy", "1.0.0"),
-            mavenBundle("org.apache.aries", "org.apache.aries.util", "1.0.0"),
-            mavenBundle("org.ow2.asm", "asm", "4.1"),
-            mavenBundle("org.ow2.asm", "asm-commons", "4.1"),
-            mavenBundle("org.ow2.asm", "asm-tree", "4.1")
+            mavenBundle("org.apache.aries.blueprint", "org.apache.aries.blueprint", "1.1.0"),
+            mavenBundle("org.apache.aries.proxy", "org.apache.aries.proxy", "1.0.1"),
+            mavenBundle("org.apache.aries", "org.apache.aries.util", "1.1.3"),
+            mavenBundle("org.ow2.asm", "asm", "5.2"),
+            mavenBundle("org.ow2.asm", "asm-commons", "5.2"),
+            mavenBundle("org.ow2.asm", "asm-tree", "5.2")
         );
     }
 

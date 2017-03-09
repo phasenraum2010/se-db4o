@@ -22,8 +22,8 @@
   </licenses>
 
   <organization>
-    <name>Spring db4o Community</name>
-    <url>http://www.springsource.org/extensions/se-db4o</url>
+    <name>Thomas Woehlke</name>
+    <url>https://github.com/phasenraum2010/se-db4o</url>
   </organization>
 
   <developers>
@@ -33,14 +33,22 @@
     <developer>
       <name>Oliver Lietz</name>
     </developer>
+    <developer>
+      <name>Thomas Woehlke</name>
+    </developer>
   </developers>
 
-  <scm>
-    <url>https://src.springsource.org/svn/se-db4o/</url>
-  </scm>
 
+  <inceptionYear>2017</inceptionYear>
+  <scm>
+    <url>https://github.com/phasenraum2010/se-db4o.git</url>
+    <connection>scm:git:https://github.com/phasenraum2010/se-db4o.git</connection>
+    <developerConnection>scm:git:https://github.com/phasenraum2010/se-db4o.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
   <issueManagement>
-    <url>https://jira.springsource.org/browse/SEDBFO</url>
+    <url>https://github.com/phasenraum2010/se-db4o/issues</url>
+    <system>GitHub Issues</system>
   </issueManagement>
 
   <ciManagement>
@@ -61,9 +69,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <org.springframework.version>3.0.0.RELEASE</org.springframework.version>
-    <org.slf4j.version>1.5.11</org.slf4j.version>
+    <org.springframework.version>4.3.7.RELEASE</org.springframework.version>
+    <org.slf4j.version>1.7.22</org.slf4j.version>
+    <slf4j.version>1.6.1</slf4j.version>
+    <log4j.version>1.2.16</log4j.version>
     <com.db4o.version>8.1.209.15862</com.db4o.version>
+    <org.aspectj-version>1.6.12</org.aspectj-version>
   </properties>
 
   <modules>
@@ -89,17 +100,23 @@
       <!-- Spring Framework -->
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.beans</artifactId>
+        <artifactId>spring-beans</artifactId>
         <version>${org.springframework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.core</artifactId>
+        <artifactId>spring-context</artifactId>
         <version>${org.springframework.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.transaction</artifactId>
+        <artifactId>spring-tx</artifactId>
         <version>${org.springframework.version}</version>
       </dependency>
       <!-- db4o -->
@@ -111,18 +128,23 @@
       <!-- logging -->
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${org.slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${org.slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
-        <version>${org.slf4j.version}</version>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
       </dependency>
       <!-- testing -->
       <dependency>
@@ -133,7 +155,7 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.test</artifactId>
+        <artifactId>spring-test</artifactId>
         <version>${org.springframework.version}</version>
       </dependency>
       <dependency>
@@ -142,7 +164,52 @@
         <version>1.9.5</version>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.8.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.blueprint</groupId>
+        <artifactId>org.apache.aries.blueprint</artifactId>
+        <version>1.1.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.proxy</groupId>
+        <artifactId>org.apache.aries.proxy</artifactId>
+        <version>1.0.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries</groupId>
+        <artifactId>org.apache.aries.util</artifactId>
+        <version>1.1.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>5.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>5.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-tree</artifactId>
+        <version>5.2</version>
+        <scope>test</scope>
+      </dependency>
+
     </dependencies>
+
   </dependencyManagement>
 
   <build>
@@ -150,7 +217,12 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
-        <version>2.3</version>
+        <version>2.12</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>2.12</version>
       </extension>
     </extensions>
     <pluginManagement>
@@ -158,17 +230,17 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.3.7</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-changes-plugin</artifactId>
-          <version>2.8</version>
+          <version>2.12.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>2.17</version>
           <configuration>
             <configLocation>checkstyle.xml</configLocation>
           </configuration>
@@ -176,7 +248,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.0</version>
+          <version>3.6.1</version>
           <configuration>
             <source>1.6</source>
             <target>1.6</target>
@@ -185,63 +257,149 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.6</version>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.13</version>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
+          <version>3.0.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.9</version>
+          <version>2.10.4</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jxr-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.5</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
-          <version>2.7.1</version>
+          <version>3.7</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>2.6</version>
+          <version>2.9</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.2</version>
+          <version>3.6</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.10</version>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>2.13</version>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>2.7</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>taglist-maven-plugin</artifactId>
           <version>2.4</version>
         </plugin>
+
+        <!-- Fuer Continous-Integration et al.: Auschecken von Subversion mittels
+                Maven. http://maven.apache.org/scm/ -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-providers</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-providers-svn</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-provider-svnexe</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-provider-svn-commons</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-providers-git</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-provider-gitexe</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-provider-git-commons</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-manager-plexus</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-managers</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.scm</groupId>
+          <artifactId>maven-scm-client</artifactId>
+          <version>${maven.scm.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+          <configuration>
+            <preparationGoals>clean</preparationGoals>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <goals>install</goals>
+          </configuration>
+        </plugin>
+
       </plugins>
     </pluginManagement>
   </build>
@@ -251,6 +409,7 @@
       <id>org.springsource.repo.release</id>
       <url>http://repo.springsource.org/release</url>
     </repository>
+    <!--
     <repository>
       <id>com.springsource.repository.bundles.release</id>
       <url>http://repository.springsource.com/maven/bundles/release</url>
@@ -259,9 +418,10 @@
       <id>com.springsource.repository.bundles.external</id>
       <url>http://repository.springsource.com/maven/bundles/external</url>
     </repository>
+    -->
     <repository>
-      <id>de.oliverlietz.maven</id>
-      <url>http://maven.oliverlietz.de</url>
+      <id>org.woehlke.maven</id>
+      <url>http://woehlke.org/maven</url>
     </repository>
   </repositories>
 
